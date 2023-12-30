@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}profile{% endblock title %}
+{% block content %}
+<div class="m-5 border">
+    <div class="p-5">
+        <div class="d-flex justify-content-between align-item-center">
+            <h1 class="text-warning">User Profile</h1>
+            <h1>
+                @{{object.username}}
+                {% if object.profile.is_verified_author %}
+                <img src="{% static "blue_badge.png" %}" alt="blue">
+                {% endif %}
+            </h1>
+        </div><hr>
+        <p class="fs-4"><strong>Name: </strong>{{object.first_name}} {{object.last_name}}</p>
+        <p class="fs-4"><strong>Account Balance: </strong>${{object.profile.balance}} </p>
+        <p class="fs-4"><strong>Email: </strong>{{object.email}}</p>
+        <p class="fs-4"><strong>Gender: </strong>{{object.profile.gender}}</p>
+        <p class="fs-4"><strong>Address: </strong>{{object.address.street_address}}, {{object.address.city}}-{{object.address.postal_code}}, {{object.address.country}}</p>
+        <a href="{% url "edit_profile" %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url "edit_pass" %}" class="btn btn-warning">Change Password</a>
+    </div>
+</div>
+<div class="m-5 border">
+    <h1>All Publications</h1>
+</div>
+{% endblock content %}
