@@ -11,6 +11,7 @@
 
     <title>{% block title %}{% endblock title %}| eBOOK</title>
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static "style.css" %}">
   </head>
   <body>
     <!--Navbar Start-->
@@ -25,21 +26,27 @@
             <li class="nav-item">
             <a class="nav-link active " aria-current="page" href="{% url "home" %}">Home</a>
             </li>
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active " aria-current="page" href="{% url "deposit_money" %}">Deposit</a>
+            </li>
+            {% endif %}
             {% if request.user.profile.is_verified_author %}
             <li class="nav-item">
-            <a class="nav-link active " aria-current="page" href="{% url "home" %}">Add Book</a>
+            <a class="nav-link active " aria-current="page" href="{% url "add_book" %}">Add Book</a>
             </li>
             {% endif %}
         </ul>
         <div class="d-flex">
           {% if request.user.is_authenticated %}
-          <a href="{% url "profile" %}" class="btn btn-outline-success mx-2 fw-bold" >
+          <a href="" class="btn btn-outline-warning disabled mx-5 text-white">Hi, {{request.user.first_name}}. Your Balance: ${{request.user.profile.balance}}</a>
+          <a href="{% url "profile" %}" class="btn btn-success mx-2 fw-bold" >
             @{{request.user.username}}
             {% if object.profile.is_verified_author %}
                 <img src="{% static "blue_badge.png" %}" class="w-25" alt="blue">
             {% endif %}
           </a>
-          <a href="{% url "logout" %}" class="btn btn-outline-danger mx-2 fw-bold" >LogOut</a>
+          <a href="{% url "logout" %}" class="btn btn-danger mx-2 fw-bold" >LogOut</a>
           {% else %}
           <a href="{% url "registration" %}" class="btn btn-outline-primary mx-2 fw-bold">SignUp</a>
           <a href="{% url "login" %}" class="btn btn-outline-success mx-2 fw-bold" >LogIn</a>

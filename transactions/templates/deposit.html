@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Deposit{% endblock title %}
+{% block content %}
+
+<div class="w-50 m-auto my-5 border rounded ">
+    {% if messages %}
+    {% for msg in messages %}
+    <p class="text-{{msg.tags}} fs-3">{{msg}}</p>
+    {% endfor %}
+    {% endif %}
+    <h1 class="p-5 text-warning">Deposit Money</h1>
+    <form method="post" class="px-5">
+        {% csrf_token %}
+        <!--{{form|crispy}}-->
+        {% for fm in form %}
+        {{fm.label_tag}}
+        {{fm}}
+        {{fm.errors|striptags}}
+        {% endfor %}
+        <button type="submit" class="btn btn-warning my-5">Submit</button>
+    </form>
+</div>
+
+
+{% endblock content %}

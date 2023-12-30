@@ -1,5 +1,56 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}home{% endblock title %}
 {% block content %}
-This is home page
+<!--main content view-->
+  <div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-secondary">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline fw-bold fs-3">Category</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    {% for cat in category %}
+                    <li class="nav-item">
+                        <div class="form-check ">
+                            {% comment %} <input class="form-check-input" type="radio" name="category" id="{{cat.id}}"> {% endcomment %}
+                            <label class="form-check-label text-white" for="{{cat.id}}">
+                                <a href="{% url "category_wise_post" cat.slug %}" class="text-decoration-none text-white fs-5">{{cat.name}}</a>
+                            </label>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+            </div>
+        </div>
+        <div class="col py-3">
+            <!-- Content Section start -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <!-- Card Start -->
+                {% for book in data %}
+                <div class="col">
+                    <div class="card">
+                    <img src="{{book.image.url}}" class="card-img-top p-2 w-75 m-auto"
+                        alt="{{book.name}}" />
+                    <div class="card-body">
+                        <h5 class="card-title">{{book.name}}</h5>
+                        <h6 class="card-subtitle">Publish Date: {{book.created_at}}</h6>
+                        <h6 class="card-subtitle">Author: {{book.author.user.first_name}} {{book.author.user.last_name}}</h6>
+                        <p class="card-text">
+                        {{book.description | truncatewords:20}}
+                        </p>
+                        <a href="{% url "details_book" book.id %}" class="btn btn-primary">More</a>
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- Card End -->
+            </div>
+            <!-- Content Section End -->
+            
+        </div>
+    </div>
+</div>
 {% endblock content %}

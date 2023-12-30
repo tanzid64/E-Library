@@ -10,7 +10,7 @@ from .constants import send_registration_email
 # Create your views here.
 class UserRegistrationView(FormView):
     template_name = 'accounts.html'
-    success_url = reverse_lazy('registration')
+    success_url = reverse_lazy('profile')
     form_class = UserRegistrationForm
     def form_valid(self, form):
         user = form.save()

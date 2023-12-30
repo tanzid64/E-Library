@@ -10,6 +10,9 @@ class Profile(BaseModel):
     balance = models.DecimalField(default=0, max_digits=12, decimal_places=2)
     is_verified_author = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return f'account no#{self.id} - Name: {self.user.first_name} {self.user.last_name} - created on: {self.created_at}'
+
 class UserAddress(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='address')
     street_address = models.CharField(max_length=100)
