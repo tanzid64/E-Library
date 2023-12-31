@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}home{% endblock title %}
-{% block content %}
-<!--main content view-->
-  <div class="container-fluid">
-    <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-secondary">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline fw-bold fs-3">Category</span>
-                </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    {% for cat in category %}
+{% for cat in category %}
                     <li class="nav-item">
                         <div class="form-check ">
                             {% comment %} <input class="form-check-input" type="radio" name="category" id="{{cat.id}}"> {% endcomment %}
@@ -21,18 +11,25 @@
                         </div>
                     </li>
                     {% endfor %}
-                </ul>
-                <hr>
-            </div>
+{% block content %}
+<!--main content view-->
+  <div class="m-5">
+        <div class="btn-group my-5">
+            <button class="btn btn-primary disabled">Category</button>
+            {% for cat in category %}
+            <button class="btn btn-outline-primary">
+                                <a href="{% url "category_wise_post" cat.slug %}" class="text-decoration-none text-dark fs-5">{{cat.name}}</a>
+                </button>
+                {% endfor %}
         </div>
+        <!-- Content Section start -->
         <div class="col py-3">
-            <!-- Content Section start -->
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <!-- Card Start -->
                 {% for book in data %}
                 <div class="col">
                     <div class="card shadow">
-                    <img src="{{book.image.url}}" class="card-img-top p-2 w-50 m-auto"
+                    <img src="{{book.image.url}}" class="card-img-top p-2 w-25 m-auto"
                         alt="{{book.name}}" />
                     <div class="card-body">
                         <h5 class="card-title">{{book.name}}</h5>
@@ -61,6 +58,6 @@
             <!-- Content Section End -->
             
         </div>
-    </div>
+
 </div>
 {% endblock content %}

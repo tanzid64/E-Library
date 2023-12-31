@@ -4,11 +4,6 @@
 {% block content %}
 
 <div class="w-50 m-auto my-5 border rounded shadow">
-    {% if messages %}
-    {% for msg in messages %}
-    <p class="text-{{msg.tags}} fs-3">{{msg}}</p>
-    {% endfor %}
-    {% endif %}
     <h1 class="p-5 text-warning">Deposit Money</h1>
     <form method="post" class="px-5">
         {% csrf_token %}
