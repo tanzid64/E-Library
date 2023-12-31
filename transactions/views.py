@@ -12,14 +12,10 @@ from .models import Transaction
 from django.urls import reverse_lazy
 # Create your views here.
 def send_transaction_email(user, amount, subject, template, **kwargs):
-        if kwargs['book_name']:
-            book_name = kwargs['book_name']
-        else:
-            book_name = None
         message = render_to_string(template,{
             'user': user,
             'amount': amount,
-            'book_name': book_name
+            'book_name': kwargs['book_name']
         })
         send_email = EmailMultiAlternatives(subject, '', to=[user.email])
         send_email.attach_alternative(message, 'text/html')
@@ -47,7 +43,7 @@ class DepositView(LoginRequiredMixin, CreateView):
             self.request,
             f'{"{:,.2f}".format(float(amount))}$ was deposited to your account successfully'
         )
-        send_transaction_email(self.request.user, amount, 'Deposit Message', 'deposit_mail.html')
+        send_transaction_email(self.request.user, amount, 'Deposit Message', 'deposit_mail.html', book_name = None)
         return super().form_valid(form)
 
 class PurchaseView(LoginRequiredMixin, View):
@@ -121,10 +117,11 @@ class ReturnBookView(LoginRequiredMixin, View):
     def get(self, request, id):
         book = Book.objects.get(pk=id)
         buyer = self.request.user.profile
-        borrowed_book = Transaction.objects.get(profile=buyer, book=book)
+        borrowed_book = Transaction.objects.get(profile=buyer, book=book, is_returned=False)
+        print(borrowed_book.id)
         if not borrowed_book.is_returned:
             borrowed_book.is_returned = True
-            borrowed_book.save()
+            borrowed_book.save()            
             buyer.balance += book.price
             buyer.save()
             messages.success(self.request, 'Return Successfull')
@@ -135,7 +132,8 @@ class ReturnBookView(LoginRequiredMixin, View):
                 amount = book.price,
                 balance_after_transaction = buyer.balance,
                 transaction_type = RETURN_BOOK,
-                book = book
+                book = book,
+                is_returned = True
             )
             transaction.save()
             return redirect('profile')
