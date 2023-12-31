@@ -28,7 +28,12 @@
   <h3 class="m-4 text-success">Total Comments : {{comments | length}}</h3>
   {% for comment in comments %}
   <div class="border m-5 bg-white shadow">
-    <p class="m-2"><strong>{{comment.profile.user.username}}</strong> <small>{{comment.created_at}}</small></p>
+    <p class="m-2">
+      <strong>
+        <a href="{% url "author_profile" comment.profile.user.id %}" class="text-decoration-none">@{{comment.profile.user.username}}</a>
+      </strong> 
+      <small>{{comment.created_at}}</small>
+    </p>
     <p class="m-2">{{comment.body}}</p>
   </div>
   {% endfor %}

@@ -1,4 +1,6 @@
 from typing import Any
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic import FormView, DetailView, UpdateView, ListView
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
@@ -10,6 +12,8 @@ from .constants import send_registration_email
 from transactions.models import Transaction
 from book.models import Book
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from .models import Profile
 # Create your views here.
 class UserRegistrationView(FormView):
     template_name = 'accounts.html'
@@ -59,6 +63,16 @@ class UserProfileView(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         context['object'] = self.request.user
         context['book_list'] = Book.objects.filter(author=self.request.user.profile)
+        return context
+    
+class AuthorProfileView(LoginRequiredMixin, DetailView):
+    template_name = 'profile.html'
+    model = User
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = Profile.objects.get(user = self.get_object())
+        context['profile'] = profile
+        context['book_list'] = Book.objects.filter(author = profile)
         return context
     
 class UserProfileUpdateView(LoginRequiredMixin,UpdateView):

@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import UserLoginView, UserLogoutView, UserRegistrationView, UserProfileView, UserProfileUpdateView, UserPasswordUpdateView
+from .views import UserLoginView, UserLogoutView, UserRegistrationView, UserProfileView, UserProfileUpdateView, UserPasswordUpdateView, AuthorProfileView
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='profile'),
+    path('profile/author/<int:pk>', AuthorProfileView.as_view(), name='author_profile'),
     path('profile/edit', UserProfileUpdateView.as_view(), name='edit_profile'),
     path('profile/edit_password', UserPasswordUpdateView.as_view(), name='edit_pass'),
     path('register/', UserRegistrationView.as_view(), name='registration'),

@@ -3,31 +3,39 @@
 {% load humanize %}
 {% block title %}profile{% endblock title %}
 {% block content %}
-
+<!--Profile Details Start-->
 <div class="m-5 border shadow">
     <div class="p-5">
         <div class="d-flex justify-content-between align-item-center">
             <h1 class="text-warning">User Profile</h1>
-            <h1>
+            <a href="{% url "author_profile" object.id %}" class="text-decoration-none">
+                <h1>
                 @{{object.username}}
                 {% if object.profile.is_verified_author %}
                 <img src="{% static "blue_badge.png" %}" alt="blue">
                 {% endif %}
             </h1>
+            </a>
         </div><hr>
         <p class="fs-4"><strong>Name: </strong>{{object.first_name}} {{object.last_name}}</p>
+        {% if request.user.id == object.id %}
         <p class="fs-4"><strong>Account Balance: </strong>${{object.profile.balance}}  <a href="{% url "deposit_money" %}" class="btn btn-sm btn-success mx-2">Add Money</a> </p>
+        {% endif %}
         <p class="fs-4"><strong>Email: </strong>{{object.email}}</p>
         <p class="fs-4"><strong>Gender: </strong>{{object.profile.gender}}</p>
         <p class="fs-4"><strong>Address: </strong>{{object.address.street_address}}, {{object.address.city}}-{{object.address.postal_code}}, {{object.address.country}}</p>
+        {% if request.user.id == object.id %}
         <div class="btn-group">
             <a href="{% url "edit_profile" %}" class="btn btn-outline-primary">Edit Profile</a>
             <a href="{% url "edit_pass" %}" class="btn btn-outline-danger">Change Password</a>
         </div>
+        {% endif %}
+
     </div>
 </div>
+<!--Profile Details End-->
 <!--Publications Start-->
-{% if request.user.profile.is_verified_author %}
+{% if profile.is_verified_author %}
 <div class="m-5 border shadow">
     <div class="p-5">
         <h1 class="text-success">All Publications</h1> <hr>
@@ -59,7 +67,6 @@
                 <td>
                     <div class="btn-group">
                         <a href="{% url "details_book" book.id %}" class="btn btn-outline-primary">Details</a>
-                        <a href="" class="btn btn-outline-info">Edit</a>
                     </div>
                 </td>
             </tr>
@@ -72,6 +79,7 @@
 {% endif %}
 <!--Publications End-->
 <!--History Start-->
+{% if request.user.id == object.id %}
 <div class="m-5 border shadow">
     <div class="p-5">
         <h1 class="text-info">User History</h1> <hr>
@@ -126,5 +134,6 @@
     </table>
     </div>
 </div>
+{% endif %}
 <!--History End-->
 {% endblock content %}

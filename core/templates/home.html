@@ -37,7 +37,11 @@
                     <div class="card-body">
                         <h5 class="card-title">{{book.name}}</h5>
                         <h6 class="card-subtitle my-2">Publish Date: {{book.created_at}}</h6>
-                        <h6 class="card-subtitle my-2">Author: {{book.author.user.first_name}} {{book.author.user.last_name}}</h6>
+                        <h6 class="card-subtitle my-2">
+                            Author: <a href="{% url "author_profile" book.author.user.id %}" class="text-decoration-none">
+                                {{book.author.user.first_name}} {{book.author.user.last_name}}
+                            </a>
+                        </h6>
                         <div class="btn-group">
                             {% for category in book.category.all %}
                             <button class="btn btn-sm btn-outline-primary disabled">{{category}}</button>

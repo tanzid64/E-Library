@@ -47,7 +47,7 @@
           <a href="" class="btn btn-outline-warning disabled mx-5 text-white">Hi, {{request.user.first_name}}. Your Balance: ${{request.user.profile.balance}}</a>
           <a href="{% url "profile" %}" class="btn btn-success mx-2 fw-bold" >
             @{{request.user.username}}
-            {% if object.profile.is_verified_author %}
+            {% if request.user.profile.is_verified_author %}
                 <img src="{% static "blue_badge.png" %}" class="w-25" alt="blue">
             {% endif %}
           </a>
