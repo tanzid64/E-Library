@@ -20,3 +20,8 @@ class Book(BaseModel):
 
     def __str__(self) -> str:
         return f'{self.name} by {self.author.user.first_name}'
+    
+class Comment(BaseModel):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='comments')
+    body = models.TextField()

@@ -1,12 +1,15 @@
 from typing import Any
 from django.shortcuts import render
-from django.views.generic import FormView, DetailView, UpdateView
+from django.views.generic import FormView, DetailView, UpdateView, ListView
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.auth import login, logout
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .forms import UserRegistrationForm, UserUpdateForm
 from .constants import send_registration_email
+from transactions.models import Transaction
+from book.models import Book
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 class UserRegistrationView(FormView):
     template_name = 'accounts.html'
@@ -38,18 +41,27 @@ class UserLoginView(LoginView):
         })
         return context
     
-class UserLogoutView(LogoutView):
+class UserLogoutView(LoginRequiredMixin,LogoutView):
     def get_success_url(self):
         if self.request.user.is_authenticated:
             logout(self.request)
         return reverse_lazy('login')
     
-class UserProfileView(DetailView):
+class UserProfileView(LoginRequiredMixin,ListView):
     template_name = 'profile.html'
-    def get_object(self):
-        return self.request.user
+    model = Transaction
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            profile=self.request.user.profile
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.request.user
+        context['book_list'] = Book.objects.filter(author=self.request.user.profile)
+        return context
     
-class UserProfileUpdateView(UpdateView):
+class UserProfileUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'accounts.html'
     form_class = UserUpdateForm
     success_url = reverse_lazy('profile')
@@ -72,7 +84,7 @@ class UserProfileUpdateView(UpdateView):
         })
         return context
     
-class UserPasswordUpdateView(PasswordChangeView):
+class UserPasswordUpdateView(LoginRequiredMixin,PasswordChangeView):
     template_name = 'accounts.html'
     success_url = reverse_lazy('profile')
     def get_context_data(self, **kwargs):
@@ -82,3 +94,4 @@ class UserPasswordUpdateView(PasswordChangeView):
             'type': '4',
         })
         return context
+    

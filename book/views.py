@@ -4,11 +4,13 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView
 from django.urls import reverse_lazy
-from .forms import AddBookForm
+from .forms import AddBookForm, CommentForm
 from django.contrib import messages
-from .models import Book
+from .models import Book, Comment
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 # Email Sending Function
 def send_author_email(user, subject, template):
         message = render_to_string(template,{
@@ -18,7 +20,7 @@ def send_author_email(user, subject, template):
         send_email.attach_alternative(message, 'text/html')
         send_email.send()
 # Create your views here.
-class AddBookView(CreateView):
+class AddBookView(LoginRequiredMixin,CreateView):
     template_name = 'book.html'
     success_url = reverse_lazy('profile')
     form_class = AddBookForm
@@ -40,4 +42,21 @@ class AddBookView(CreateView):
 class BookDetailsView(DetailView):
     model = Book
     template_name = 'book_details.html'
-    
+    def post(self, request, *args, **kwargs):
+        comment_form = CommentForm(data=request.POST)
+        book = self.get_object()
+
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.book = book
+            new_comment.profile = self.request.user.profile
+            new_comment.save()
+
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.object
+        context['comments'] = book.comments.all()
+        context['comment_form'] = CommentForm
+        return context

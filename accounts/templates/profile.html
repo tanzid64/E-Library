@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 {% block title %}profile{% endblock title %}
 {% block content %}
-<div class="m-5 border">
+
+<div class="m-5 border shadow">
     <div class="p-5">
         <div class="d-flex justify-content-between align-item-center">
             <h1 class="text-warning">User Profile</h1>
@@ -18,11 +20,111 @@
         <p class="fs-4"><strong>Email: </strong>{{object.email}}</p>
         <p class="fs-4"><strong>Gender: </strong>{{object.profile.gender}}</p>
         <p class="fs-4"><strong>Address: </strong>{{object.address.street_address}}, {{object.address.city}}-{{object.address.postal_code}}, {{object.address.country}}</p>
-        <a href="{% url "edit_profile" %}" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url "edit_pass" %}" class="btn btn-warning">Change Password</a>
+        <div class="btn-group">
+            <a href="{% url "edit_profile" %}" class="btn btn-outline-primary">Edit Profile</a>
+            <a href="{% url "edit_pass" %}" class="btn btn-outline-danger">Change Password</a>
+        </div>
     </div>
 </div>
-<div class="m-5 border">
-    <h1>All Publications</h1>
+<!--Publications Start-->
+{% if request.user.profile.is_verified_author %}
+<div class="m-5 border shadow">
+    <div class="p-5">
+        <h1 class="text-success">All Publications</h1> <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Book Title</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Price (per piece)</th>
+            <th scope="col">Related Information</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in book_list  %}
+            <tr>
+                <td>
+                    {{ book.created_at|date:"F d, Y h:i A" }}
+                </td>
+                <td>
+                    {{ book.name }}
+                </td>
+                <td>
+                    {{ book.quantity }}
+                </td>
+                <td>
+                    $ {{ book.price|floatformat:2|intcomma }}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{% url "details_book" book.id %}" class="btn btn-outline-primary">Details</a>
+                        <a href="" class="btn btn-outline-info">Edit</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    </div>
 </div>
+{% endif %}
+<!--Publications End-->
+<!--History Start-->
+<div class="m-5 border shadow">
+    <div class="p-5">
+        <h1 class="text-info">User History</h1> <hr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Transaction Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Balance After Transaction</th>
+            <th scope="col">Book Title</th>
+            <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in object_list  %}
+            <tr>
+                <td>
+                    {{ transaction.created_at|date:"F d, Y h:i A" }}
+                </td>
+                <td>
+                    {{ transaction.get_transaction_type_display }}
+                </td>
+                <td>
+                    $ {{ transaction.amount|floatformat:2|intcomma }}
+                </td>
+                <td>
+                    $ {{ transaction.balance_after_transaction|floatformat:2|intcomma }}
+                </td>
+                <td>
+                    {% if transaction.book.name %}
+                    {{transaction.book.name}}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if transaction.transaction_type == 3 and not transaction.is_returned %}
+                    <a href="{% url "return_book" transaction.book.id %}" class="btn btn-sm btn-danger">Return</a>
+                    {% elif transaction.transaction_type == 3 %}
+                    Returned
+                    {% elif transaction.transaction_type == 4 %}
+                    successfully returned
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+    </div>
+</div>
+<!--History End-->
 {% endblock content %}

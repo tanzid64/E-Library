@@ -1,5 +1,5 @@
 from django import forms
-from .models import Book, Category
+from .models import Book, Category, Comment
 
 class AddBookForm(forms.ModelForm):
     
@@ -9,3 +9,8 @@ class AddBookForm(forms.ModelForm):
         widgets = {
             'category' : forms.CheckboxSelectMultiple
         }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['body']

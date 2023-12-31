@@ -31,13 +31,19 @@
                 <!-- Card Start -->
                 {% for book in data %}
                 <div class="col">
-                    <div class="card">
-                    <img src="{{book.image.url}}" class="card-img-top p-2 w-75 m-auto"
+                    <div class="card shadow">
+                    <img src="{{book.image.url}}" class="card-img-top p-2 w-50 m-auto"
                         alt="{{book.name}}" />
                     <div class="card-body">
                         <h5 class="card-title">{{book.name}}</h5>
-                        <h6 class="card-subtitle">Publish Date: {{book.created_at}}</h6>
-                        <h6 class="card-subtitle">Author: {{book.author.user.first_name}} {{book.author.user.last_name}}</h6>
+                        <h6 class="card-subtitle my-2">Publish Date: {{book.created_at}}</h6>
+                        <h6 class="card-subtitle my-2">Author: {{book.author.user.first_name}} {{book.author.user.last_name}}</h6>
+                        <div class="btn-group">
+                            {% for category in book.category.all %}
+                            <button class="btn btn-sm btn-outline-primary disabled">{{category}}</button>
+                            {% endfor %}
+                        </div>
+                        </p>
                         <p class="card-text">
                         {{book.description | truncatewords:20}}
                         </p>

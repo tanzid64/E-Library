@@ -1,13 +1,47 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load crispy_forms_tags %}
 {% load static %}
 {% block title %}profile{% endblock title %}
 {% block content %}
-{{object.name}}
-<div class="card flex-row">
-    <img class="card-img-left example-card-img-responsive" src="{{object.image.url}}"/>
+<!-- Book Details Start-->
+<div class="card flex-row m-5 ">
+    <div class="w-50">
+      <img class="card-img-left w-75" src="{{object.image.url}}"/>
+    </div>
   <div class="card-body">
-    <h4 class="card-title h5 h4-sm">Left image</h4>
-    <p class="card-text">Example text</p>
+    <h4 class="card-title ">{{object.name}}</h4>
+    <p class="card-text fs-5">Publish Date: {{object.created_at}}</p>
+    <p class="card-text fs-5">Language: {{object.language}}</p>
+    <p class="card-text fs-5 text-primary">Author: {{object.author.user.first_name}} {{object.author.user.last_name}}</p>
+    <p class="card-text fs-5">Quantity: {{object.quantity}}</p>
+    <p class="card-text fs-5">Price: ${{object.price}}</p>
+    <p class="card-text fs-5">{{object.description}}</p>
+    <a href="{% url "buy_now" object.id %}" class="btn btn-warning">Buy Now</a>
+    <a href="{% url "borrow_book" object.id %}" class="btn btn-primary">Borrow Now</a>
   </div>
 </div>
+<!-- Book Details End -->
+<!-- Comment Start -->
+<div class="card m-5">
+  
+</div>
+<div class="border m-5 shadow">
+  <h3 class="m-4 text-success">Total Comments : {{comments | length}}</h3>
+  {% for comment in comments %}
+  <div class="border m-5 bg-white shadow">
+    <p class="m-2"><strong>{{comment.profile.user.first_name}}</strong> <small>{{comment.created_at}}</small></p>
+    <p class="m-2">{{comment.body}}</p>
+  </div>
+  {% endfor %}
+</div>
+<div class="border m-5 shadow">
+  <h1 class="m-5 mb-3 text-primary">Add Comment</h1>
+  <div class="m-5">
+    <form action="" method="post">
+      {% csrf_token %}
+      {{comment_form|crispy}}
+      <button class="btn btn-primary">Post</button>
+    </form>
+  </div>
+</div>
+<!-- Comment End -->
 {% endblock content %}

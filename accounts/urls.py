@@ -9,6 +9,8 @@ urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='registration'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
+    # path('profile/history/', TransactionHistoryView.as_view(), name='transaction_history'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
