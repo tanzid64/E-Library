@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% load crispy_forms_tags %}
 {% load static %}
-{% block title %}details book{% endblock title %}
+{% block title %}profile{% endblock title %}
 {% block content %}
 <!-- Book Details Start-->
 <div class="card flex-row m-5 ">
@@ -45,7 +45,7 @@
   </div>
   {% endfor %}
 </div>
-{% if is_bought == True %}
+{% if is_bought  %}
 <div class="border m-5 shadow">
   <h1 class="m-5 mb-3 text-primary">Add Comment</h1>
   <div class="m-5">
