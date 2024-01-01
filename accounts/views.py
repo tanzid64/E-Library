@@ -62,6 +62,7 @@ class UserProfileView(LoginRequiredMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = self.request.user
+        context['profile'] = self.request.user.profile
         context['book_list'] = Book.objects.filter(author=self.request.user.profile)
         return context
     

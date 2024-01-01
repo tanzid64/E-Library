@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from .forms import AddBookForm, CommentForm
 from django.contrib import messages
 from .models import Book, Comment
+from transactions.models import Transaction
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -45,7 +46,7 @@ class BookDetailsView(DetailView):
     def post(self, request, *args, **kwargs):
         comment_form = CommentForm(data=request.POST)
         book = self.get_object()
-
+        
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
             new_comment.book = book
@@ -57,6 +58,14 @@ class BookDetailsView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         book = self.object
+        try:
+            is_bought = Transaction.objects.filter(book = book, profile = self.request.user.profile).exists()
+        except:
+            is_bought = False
+        print(is_bought)
+        
+        context['is_bought'] = is_bought
+        context['book'] = self.object
         context['comments'] = book.comments.all()
         context['comment_form'] = CommentForm
         return context
